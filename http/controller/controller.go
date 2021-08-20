@@ -15,6 +15,8 @@ type ControllerInterface interface {
 	Render() error
 	Ctx() *context.Context
 	View() *view.View
+	Query(string) string
+	Post(string) string
 }
 
 type Controller struct {
@@ -70,4 +72,12 @@ func (c Controller) Ctx() *context.Context {
 
 func (c Controller) View() *view.View {
 	return c.view
+}
+
+func (c Controller) Query(field string) string {
+	return c.Input().Query(field)
+}
+
+func (c Controller) Post(field string) string {
+	return c.Input().Post(field)
 }
