@@ -123,3 +123,7 @@ func (i *Input) Data() map[string][]string {
 func (i *Input) IsMultipartForm() bool {
 	return i.GetHeader("Context-Type") == "multipart/form-data"
 }
+
+func (i *Input) Headers() map[string][]string {
+	return map[string][]string(i.request.Header)
+}

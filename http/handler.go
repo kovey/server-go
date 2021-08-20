@@ -33,10 +33,10 @@ func (h *Handler) ServeHTTP(response http.ResponseWriter, request *http.Request)
 		monLog.Trace = util.GetTrace(err)
 		monLog.End = time.Now().UnixNano() / 1e6
 		monLog.Delay = float64(monLog.End-monLog.RequestTime) / 1e6
+		monLog.Err = ""
 
-		if err == nil {
+		if err != nil {
 			monLog.Err = fmt.Sprintf("%s", err)
-		} else {
 			output.InternalError()
 			output.End()
 		}

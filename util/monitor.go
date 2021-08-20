@@ -35,6 +35,7 @@ func GetMonitor(input *context.Input, traceId string, spanId string) *monitor.Mo
 	monLog.ClientLang = "JS"
 	monLog.ServerLang = "golang"
 	monLog.From = ""
+	monLog.Header = input.Headers()
 
 	return monLog
 }

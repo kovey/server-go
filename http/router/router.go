@@ -59,17 +59,20 @@ func (r *Router) Call(ctx *context.Context) error {
 	}
 
 	args := make([]reflect.Value, 0)
-	fun.Call(args)
-	ctx.Output().SetStatus(200)
+	result := Result(fun.Call(args))
+	if result != nil {
+		return result
+	}
+
 	if !r.ViewDisabled() {
 		render := vValue.MethodByName("Render")
-		result := render.Call(args)
-		res, ok := result[0].Interface().(error)
-		if ok {
-			return res
+		result = Result(render.Call(args))
+		if result != nil {
+			return result
 		}
 	}
 
+	ctx.Output().SetStatus(200)
 	return nil
 }
 
@@ -79,4 +82,17 @@ func (r *Router) Path() string {
 
 func (r *Router) ViewDisabled() bool {
 	return r.viewDisabled
+}
+
+func Result(result []reflect.Value) error {
+	if len(result) == 0 {
+		return nil
+	}
+
+	res, ok := result[0].Interface().(error)
+	if ok {
+		return res
+	}
+
+	return nil
 }
