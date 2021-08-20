@@ -1,2 +1,4 @@
 github.com/kovey/logger-go v0.0.1 h1:oXbfCfw/9MIDn6jieCA5Uxe+KFcAIHWSGgqzuaX0+n0=
 github.com/kovey/logger-go v0.0.1/go.mod h1:x7AnVVx/y5tYjV5UzxU+X3CaJLtB7/Fk6ghuzkN84pA=
+github.com/kovey/logger-go v0.0.3 h1:0gE7TeY4xxNEpHipaKgkB/x92GAO9e2FmkbTCDWIE/Q=
+github.com/kovey/logger-go v0.0.3/go.mod h1:x7AnVVx/y5tYjV5UzxU+X3CaJLtB7/Fk6ghuzkN84pA=

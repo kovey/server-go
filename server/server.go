@@ -145,3 +145,16 @@ func (s *Server) Send(buf []byte, fd int64) (int, error) {
 	return conn.Write(buf)
 
 }
+
+func (s *Server) Connection(fd int64) *Connection {
+	conn, ok := s.connections[fd]
+	if !ok {
+		return nil
+	}
+
+	return conn
+}
+
+func (s *Server) Connections() map[int64]*Connection {
+	return s.connections
+}
