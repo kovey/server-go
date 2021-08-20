@@ -34,6 +34,8 @@ func (h *Handler) ServeHTTP(response http.ResponseWriter, request *http.Request)
 		monLog.End = time.Now().UnixNano() / 1e6
 		monLog.Delay = float64(monLog.End-monLog.RequestTime) / 1e6
 		monLog.Err = ""
+		monLog.HttpCode = ctx.Output().Status()
+		monLog.Response = ctx.Output().Data()
 
 		if err != nil {
 			monLog.Err = fmt.Sprintf("%s", err)

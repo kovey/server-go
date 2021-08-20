@@ -11,10 +11,11 @@ type Output struct {
 	response http.ResponseWriter
 	data     interface{}
 	buf      []byte
+	status   int
 }
 
 func NewOutput(response http.ResponseWriter) *Output {
-	return &Output{response: response}
+	return &Output{response: response, status: 200}
 }
 
 func (o *Output) ToJson() {
@@ -54,11 +55,12 @@ func (o *Output) SetHeader(key string, value string) *Output {
 }
 
 func (o *Output) SetStatus(code int) *Output {
-	o.response.WriteHeader(code)
+	o.status = code
 	return o
 }
 
 func (o *Output) End() {
+	o.response.WriteHeader(o.status)
 	_, err := o.response.Write(o.buf)
 	if err != nil {
 		logger.Error("response end fail: %s", err)
@@ -90,4 +92,12 @@ func (o *Output) Redirect(url string) {
 
 func (o *Output) Response() http.ResponseWriter {
 	return o.response
+}
+
+func (o *Output) Status() int {
+	return o.status
+}
+
+func (o *Output) Data() interface{} {
+	return o.data
 }
