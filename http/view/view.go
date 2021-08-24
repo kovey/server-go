@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"path"
 
 	"github.com/kovey/logger-go/logger"
 	"github.com/kovey/server-go/util"
@@ -31,7 +32,10 @@ func (v *View) Load() error {
 		return fmt.Errorf("path[%s] is not exists", v.path)
 	}
 
-	v.tpl = template.Must(template.ParseFiles(v.path))
+	v.tpl = template.Must(template.New(path.Base(v.path)).Funcs(template.FuncMap{
+		"add": Add, "sub": Sub, "mul": Mul, "div": Div, "map_get": MapGet,
+	}).ParseFiles(v.path))
+
 	logger.Debug("view load end, path[%s]", v.path)
 	return nil
 }

@@ -1,7 +1,9 @@
 package context
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/kovey/logger-go/logger"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -10,10 +12,25 @@ import (
 
 type Input struct {
 	request *http.Request
+	data map[string]interface{}
 }
 
 func NewInput(request *http.Request) *Input {
-	return &Input{request: request}
+	input := &Input{request: request, data: make(map[string]interface{})}
+	input.parseData()
+
+	return input
+}
+
+func (i *Input) parseData() {
+	if !i.isJson() {
+		return
+	}
+	
+	err := i.Json(&i.data)
+	if err != nil {
+		logger.Error("parse data to json fail, error: %s", err)
+	}
 }
 
 func (i *Input) Method() string {
@@ -112,7 +129,16 @@ func (i *Input) PostData() map[string][]string {
 	return map[string][]string(i.request.MultipartForm.Value)
 }
 
-func (i *Input) Data() map[string][]string {
+func (i *Input) isJson() bool {
+	logger.Debug("content-type: %s", i.GetHeader("Content-Type"))
+	return strings.ToLower(i.GetHeader("Content-Type")) == "application/json";
+}
+
+func (i *Input) Data() interface{} {
+	if i.isJson() {
+		return i.data
+	}
+
 	if i.Is("get") {
 		return i.QueryData()
 	}
@@ -121,9 +147,13 @@ func (i *Input) Data() map[string][]string {
 }
 
 func (i *Input) IsMultipartForm() bool {
-	return i.GetHeader("Context-Type") == "multipart/form-data"
+	return i.GetHeader("Content-Type") == "multipart/form-data"
 }
 
 func (i *Input) Headers() map[string][]string {
 	return map[string][]string(i.request.Header)
+}
+
+func (i *Input) Json(data interface{}) error {
+	return json.NewDecoder(i.request.Body).Decode(data)
 }

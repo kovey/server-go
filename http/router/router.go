@@ -53,7 +53,7 @@ func (r *Router) Call(ctx *context.Context) error {
 	base.Set(reflect.ValueOf(controller.NewController(ctx, r.viewPath)))
 
 	fun := vValue.MethodByName(r.action)
-	if fun.IsZero() {
+	if !fun.IsValid() || fun.IsZero() {
 		ctx.Output().PageNotFound()
 		return fmt.Errorf("action[%s] is not exists", r.action)
 	}
